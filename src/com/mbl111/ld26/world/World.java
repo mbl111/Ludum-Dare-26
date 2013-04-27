@@ -15,6 +15,7 @@ public class World {
 	public int width, height;
 	public List<Entity> entities = new ArrayList<Entity>();
 	public List<Entity>[] entitiesInTiles;
+	public int lastEntityId = 0;
 
 	public World(int w, int h) {
 		this.width = w;
@@ -27,7 +28,9 @@ public class World {
 		}
 		Arrays.fill(tiles, 1);
 
-		add(new Unit());
+		for (int i = 0; i < 5; i++) {
+			add(new Unit(i));
+		}
 
 	}
 
@@ -76,7 +79,7 @@ public class World {
 
 	public void add(Entity entity) {
 		entities.add(entity);
-		entity.init(this);
+		entity.init(this, lastEntityId++);
 		insertEntity(entity.x / Tile.WIDTH, entity.y / Tile.HEIGHT, entity);
 
 	}

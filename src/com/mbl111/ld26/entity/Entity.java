@@ -3,16 +3,19 @@ package com.mbl111.ld26.entity;
 import com.mbl111.ld26.screen.Screen;
 import com.mbl111.ld26.world.World;
 import com.mbl111.ld26.world.tile.Tile;
-import com.mbl111.ld26.world.tile.util.SyncedRandom;
 
 public class Entity {
 
+	public int id = -1;
 	public int x, y, xr, yr;
 	public World world;
 	public boolean removed = false;
+	public int dir = 0;
+	protected double walkDist = 0;
+	protected boolean walking = false;
 
 	public Entity() {
-		x = 10 + SyncedRandom.r.nextInt(5) * 4;
+		x = 10;
 		y = 10;
 		xr = yr = 5;
 	}
@@ -31,13 +34,28 @@ public class Entity {
 	}
 
 	public void move(int xa, int ya) {
-		movePart(xa, 0);
-		movePart(0, ya);
+		if (movePart(xa, 0) || movePart(0, ya)) {
+			walkDist += Math.sqrt(xa * xa + ya * ya);
+			walking = true;
+			if (ya > 0)
+				dir = 0;
+			if (ya < 0)
+				dir = 2;
+			if (xa > 0)
+				dir = 1;
+			if (xa < 0)
+				dir = 3;
+		} else {
+			walking = false;
+		}
 	}
 
 	private boolean movePart(int x, int y) {
 		if (x != 0 && y != 0)
 			return false;
+		if (x == 0 && y == 0) {
+			return false;
+		}
 
 		int yrc = (y < 0 ? -this.yr : this.yr);
 		int xrc = (x < 0 ? -this.xr : this.xr);
@@ -45,17 +63,19 @@ public class Entity {
 		if (world.getTile((x + this.x + xrc) / Tile.WIDTH, (y + this.y + yrc) / Tile.HEIGHT).canPass(this)) {
 			this.x += x;
 			this.y += y;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	public void remove() {
 		this.removed = false;
 	}
 
-	public void init(World world) {
+	public void init(World world, int lastEntityId) {
 		this.world = world;
+		this.id = lastEntityId;
 	}
 
 	public void tick() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
 
 import com.mbl111.ld26.Game;
 import com.mbl111.ld26.entity.Entity;
@@ -19,6 +20,7 @@ public class PlayerView {
 	public int selectedBuilding = -1;
 	public int selectedUnit = -1;
 	public List<Message> messages = new ArrayList<Message>();
+	private TreeMap<Integer, Unit> units = new TreeMap<Integer, Unit>();
 
 	public PlayerView(int w, int h) {
 		this.width = w;
@@ -42,7 +44,15 @@ public class PlayerView {
 		int my = Game.instance.getInput().y;
 
 		if (Game.instance.getInput().b0Clicked) {
-			selectedUnit = getNearestUnit(mx, my);
+			int u = getNearestUnit(mx, my);
+			if (u != -1) {
+				if (selectedUnit != -1) {
+					units.get(selectedUnit).unSelect();
+				}
+				units.get(u).select();
+				selectedUnit = u;
+			}
+
 		}
 
 		if (Game.instance.getInput().up.down)
@@ -65,30 +75,40 @@ public class PlayerView {
 
 	}
 
-	private Comparator<Entity> unitDistFromMouse = new Comparator<Entity>() {
+//	private Comparator<Entity> unitDistFromMouse = new Comparator<Entity>() {
+//
+//		public int compare(Entity o1, Entity o2) {
+//
+//			int mx = Game.instance.getInput().x;
+//			int my = Game.instance.getInput().y;
+//			double d1 = Math.sqrt((mx - o1.x) * (mx - o1.x) + (my - o1.y) * (my - o1.y));
+//			double d2 = Math.sqrt((mx - o2.x) * (mx - o2.x) + (my - o2.y) * (my - o2.y));
+//
+//			return (int) (d1 - d2);
+//
+//		}
+//	};
 
-		public int compare(Entity o1, Entity o2) {
-
-			int mx = Game.instance.getInput().x;
-			int my = Game.instance.getInput().y;
-			double d1 = Math.sqrt((mx - o1.x) * (mx - o1.x) + (my - o1.y) * (my - o1.y));
-			double d2 = Math.sqrt((mx - o2.x) * (mx - o2.x) + (my - o2.y) * (my - o2.y));
-
-			return (int) (d1 - d2);
-
-		}
-	};
-
-	private Unit getNearestUnit(int mx, int my) {
+	private int getNearestUnit(int mx, int my) {
 		List<Entity> search = new ArrayList<Entity>();
 		World w = Game.instance.getWorld();
-		int xx = mx / Tile.WIDTH;
-		int yy = my / Tile.HEIGHT;
-		search.addAll(w.getTileEntities(xx - 1, yy - 1, xx + 1, yy + 1));
+		search.addAll(w.getEntities(mx - 4, my - 4, mx + 4, my + 4));
 		if (search.size() > 0) {
-			Collections.sort(search, unitDistFromMouse);
+			double bestDist = -1;
+			int toSelect = -1;
+			for (Entity e : search) {
+				if (e instanceof Unit) {
+					Unit u = (Unit) e;
+					double d1 = Math.sqrt((mx - u.x) * (mx - u.x) + (my - u.y) * (my - u.y));
+					if (d1 < bestDist || bestDist == -1) {
+						bestDist = d1;
+						toSelect = u.id;
+					}
+				}
+			}
+			return toSelect;
 		}
-		return null;
+		return -1;
 	}
 
 	public void render(Screen screen) {
@@ -138,5 +158,9 @@ public class PlayerView {
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).render(screen);
 		}
+	}
+
+	public void addUnit(Unit unit, int lastEntityId) {
+		this.units.put(lastEntityId, unit);
 	}
 }

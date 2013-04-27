@@ -63,8 +63,8 @@ public class Game extends Canvas implements Runnable {
 	private void init() {
 		System.out.println("Init");
 		screen = new Screen(WIDTH, HEIGHT);
-		world = new World(32, 32);
 		view = new PlayerView(WIDTH, HEIGHT);
+		world = new World(32, 32);
 		inputHandler = new InputHandler(this);
 	}
 
@@ -89,11 +89,11 @@ public class Game extends Canvas implements Runnable {
 				shouldRender = true;
 			}
 
-//			try {
-//				Thread.sleep(1L);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
+			// try {
+			// Thread.sleep(1L);
+			// } catch (InterruptedException e) {
+			// e.printStackTrace();
+			// }
 
 			{
 				if (shouldRender) {
@@ -116,7 +116,7 @@ public class Game extends Canvas implements Runnable {
 		tickCount++;
 		input = inputHandler.updateMouseStatus(SCALE);
 		this.view.tick();
-		
+
 		if (this.hasFocus()) {
 		}
 	}
@@ -165,6 +165,10 @@ public class Game extends Canvas implements Runnable {
 
 	public Input getInput() {
 		return input;
+	}
+
+	public PlayerView getPlayerView() {
+		return view;
 	}
 
 }
