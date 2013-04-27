@@ -23,6 +23,7 @@ public class Game extends Canvas implements Runnable {
 	public static final String NAME = "";
 	private static int SCALE = 3;
 	public static Game instance;
+	public static int tickCount = 0;
 
 	private JFrame frame;
 	public boolean running = true;
@@ -88,11 +89,11 @@ public class Game extends Canvas implements Runnable {
 				shouldRender = true;
 			}
 
-			try {
-				Thread.sleep(1L);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(1L);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
 			{
 				if (shouldRender) {
@@ -112,9 +113,11 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void tick() {
+		tickCount++;
 		input = inputHandler.updateMouseStatus(SCALE);
+		this.view.tick();
+		
 		if (this.hasFocus()) {
-			this.view.tick();
 		}
 	}
 

@@ -28,4 +28,8 @@ public class Screen extends Bitmap {
 		this.yOff = y;
 	}
 
+	public void drawFont(Bitmap bitmap, int x, int y, int color) {
+		super.drawFont(bitmap, x, y, color);
+	}
+
 }

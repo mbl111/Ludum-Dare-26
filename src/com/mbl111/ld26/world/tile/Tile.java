@@ -1,11 +1,13 @@
 package com.mbl111.ld26.world.tile;
 
+import com.mbl111.ld26.entity.Entity;
 import com.mbl111.ld26.screen.Screen;
 
 public abstract class Tile {
 
 	public Tile(int id) {
-		if (tiles[id] != null) System.err.println("Tile " + id + " already exists");
+		if (tiles[id] != null)
+			System.err.println("Tile " + id + " already exists");
 		tiles[id] = this;
 	}
 
@@ -35,5 +37,9 @@ public abstract class Tile {
 
 	public static Tile VOIDTILE = new VoidTile(0);
 	public static Tile GRASSTILE = new GrassTile(1);
+
+	public boolean canPass(Entity entity) {
+		return true;
+	}
 
 }

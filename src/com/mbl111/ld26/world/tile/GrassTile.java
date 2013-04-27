@@ -14,7 +14,7 @@ public class GrassTile extends Tile {
 	}
 
 	public void tick(int x, int y) {
-
+		
 	}
 
 	public void render(Screen screen, int x, int y) {
