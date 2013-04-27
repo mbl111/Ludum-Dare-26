@@ -23,7 +23,7 @@ public class Game extends Canvas implements Runnable {
 	public static final int WIDTH = 360;
 	public static final int HEIGHT = WIDTH * 3 / 4;
 	public static final String NAME = "";
-	private static int SCALE = 3;
+	public static int SCALE = 3;
 	public static Game instance;
 	public static int tickCount = 0;
 
@@ -35,15 +35,16 @@ public class Game extends Canvas implements Runnable {
 	private PlayerView view;
 	private InputHandler inputHandler;
 	private Input input = null;
+	private Thread thread;
 
 	public Game() {
 		instance = this;
+		thread = new Thread(this, "Main Game Thread");
+		thread.setPriority(Thread.MAX_PRIORITY);
 	}
 
 	public void start() {
-		Thread t = new Thread(this, "Main Game Thread");
-		t.setPriority(Thread.MAX_PRIORITY);
-		t.start();
+		thread.start();
 	}
 
 	public void stop() {

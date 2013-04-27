@@ -2,6 +2,7 @@ package com.mbl111.ld26;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 public class GameApplet extends Applet {
 
@@ -14,6 +15,10 @@ public class GameApplet extends Applet {
 	@Override
 	public void start() {
 		game.start();
+		setLayout(new BorderLayout());
+		setSize(Game.WIDTH * Game.SCALE, Game.HEIGHT * Game.SCALE);
+		setMaximumSize(new Dimension(Game.WIDTH * Game.SCALE, Game.HEIGHT * Game.SCALE));
+		add(game);
 		super.start();
 	}
 
@@ -23,8 +28,7 @@ public class GameApplet extends Applet {
 	}
 
 	public void init() {
-		setLayout(new BorderLayout());
-		add(game, BorderLayout.CENTER);
+
 	};
 
 }
