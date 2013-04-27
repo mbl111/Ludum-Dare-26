@@ -28,6 +28,9 @@ public class World {
 		}
 		Arrays.fill(tiles, 1);
 
+		tiles[2 + 2 * width] = 2;
+		data[2 + 2 * width] = 4;
+
 		for (int i = 0; i < 5; i++) {
 			add(new Unit(i));
 		}
@@ -134,5 +137,12 @@ public class World {
 			}
 		}
 		return result;
+	}
+
+	public int getData(int x, int y) {
+		if (x >= width || x < 0 || y >= height || y < 0)
+			return 0;
+
+		return data[x + y * width];
 	}
 }

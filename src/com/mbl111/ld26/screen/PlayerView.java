@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.mbl111.ld26.Game;
+import com.mbl111.ld26.ai.FollowJob;
 import com.mbl111.ld26.ai.MoveJob;
 import com.mbl111.ld26.entity.Entity;
 import com.mbl111.ld26.entity.Unit;
@@ -46,7 +47,7 @@ public class PlayerView {
 		int my = Game.instance.getInput().y;
 
 		if (Game.instance.getInput().b0Clicked) {
-			int u = getNearestUnit(mx, my);
+			int u = getNearestUnit(mx + scrollX, my + scrollY);
 			if (u != -1) {
 				if (selectedUnit != -1) {
 					units.get(selectedUnit).unSelect();
@@ -63,6 +64,16 @@ public class PlayerView {
 				if (u != null) {
 					u.setJob(new MoveJob(mx + scrollX, my + scrollY));
 					messages.add(new Message("Moving Unit(" + u.id + ") to (" + (mx + scrollX) + "," + (my + scrollY) + ")", MessageType.INFO));
+				}
+			}
+		}
+
+		if (Game.instance.getInput().b2Clicked) {
+			if (selectedUnit > -1) {
+				Unit u = units.get(selectedUnit);
+				if (u != null) {
+					u.setJob(new FollowJob(units.get(getNearestUnit(mx + scrollX, my + scrollY))));
+					messages.add(new Message("Following!", MessageType.INFO));
 				}
 			}
 		}

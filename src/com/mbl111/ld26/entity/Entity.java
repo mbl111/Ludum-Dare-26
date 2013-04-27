@@ -7,7 +7,7 @@ import com.mbl111.ld26.world.tile.Tile;
 public class Entity {
 
 	public int id = -1;
-	public int x, y, xr, yr;
+	public int x, y, xr, yr, ox, oy;
 	public World world;
 	public boolean removed = false;
 	public int dir = 0;
@@ -15,8 +15,8 @@ public class Entity {
 	public boolean walking = false;
 
 	public Entity() {
-		x = 10;
-		y = 10;
+		x = ox = 10;
+		y = oy = 10;
 		xr = yr = 5;
 	}
 
@@ -66,6 +66,8 @@ public class Entity {
 		int xrc = (x < 0 ? -this.xr : this.xr);
 
 		if (world.getTile((x + this.x + xrc) / Tile.WIDTH, (y + this.y + yrc) / Tile.HEIGHT).canPass(this)) {
+			this.ox = this.x;
+			this.oy = this.y;
 			this.x += x;
 			this.y += y;
 			return true;

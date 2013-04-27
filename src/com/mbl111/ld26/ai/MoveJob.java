@@ -1,6 +1,6 @@
 package com.mbl111.ld26.ai;
 
-import com.mbl111.ld26.world.tile.util.MathHelper;
+import com.mbl111.ld26.util.MathHelper;
 
 public class MoveJob extends Job {
 

@@ -34,7 +34,7 @@ public class Unit extends Entity {
 
 	@Override
 	public void render(Screen screen) {
-		if (!walking) {
+		if (this.ox == this.x && this.y == this.oy) {
 			screen.draw(Art.UNIT[dir * 3][0], x - this.xr, y - this.yr);
 		} else {
 			int part = (int) (walkDist % 16) / 4;

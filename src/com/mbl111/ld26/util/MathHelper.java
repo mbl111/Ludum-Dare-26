@@ -1,4 +1,4 @@
-package com.mbl111.ld26.world.tile.util;
+package com.mbl111.ld26.util;
 
 public class MathHelper {
 
