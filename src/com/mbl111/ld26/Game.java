@@ -2,7 +2,6 @@ package com.mbl111.ld26;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -11,13 +10,16 @@ import javax.swing.JFrame;
 
 import com.mbl111.ld26.input.Input;
 import com.mbl111.ld26.input.InputHandler;
-import com.mbl111.ld26.screen.Art;
 import com.mbl111.ld26.screen.PlayerView;
 import com.mbl111.ld26.screen.Screen;
 import com.mbl111.ld26.world.World;
 
 public class Game extends Canvas implements Runnable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7047831301158704485L;
 	public static final int WIDTH = 360;
 	public static final int HEIGHT = WIDTH * 3 / 4;
 	public static final String NAME = "";
@@ -27,7 +29,7 @@ public class Game extends Canvas implements Runnable {
 
 	private JFrame frame;
 	public boolean running = true;
-	private int fps = 0;
+	public int fps = 0;
 	private Screen screen;
 	private World world;
 	private PlayerView view;
@@ -44,7 +46,7 @@ public class Game extends Canvas implements Runnable {
 		t.start();
 	}
 
-	private void stop() {
+	public void stop() {
 		this.running = false;
 	}
 
@@ -110,6 +112,8 @@ public class Game extends Canvas implements Runnable {
 				ticks = 0;
 			}
 		}
+
+		System.exit(0);
 	}
 
 	private void tick() {

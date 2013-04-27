@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.mbl111.ld26.Game;
+import com.mbl111.ld26.ai.MoveJob;
 import com.mbl111.ld26.entity.Entity;
 import com.mbl111.ld26.entity.Unit;
+import com.mbl111.ld26.screen.Message.MessageType;
 import com.mbl111.ld26.world.World;
 import com.mbl111.ld26.world.tile.Tile;
 
@@ -55,6 +57,16 @@ public class PlayerView {
 
 		}
 
+		if (Game.instance.getInput().b1Clicked) {
+			if (selectedUnit > -1) {
+				Unit u = units.get(selectedUnit);
+				if (u != null) {
+					u.setJob(new MoveJob(mx + scrollX, my + scrollY));
+					messages.add(new Message("Moving Unit(" + u.id + ") to (" + (mx + scrollX) + "," + (my + scrollY) + ")", MessageType.INFO));
+				}
+			}
+		}
+
 		if (Game.instance.getInput().up.down)
 			scrollY -= 2;
 		if (Game.instance.getInput().down.down)
@@ -75,19 +87,21 @@ public class PlayerView {
 
 	}
 
-//	private Comparator<Entity> unitDistFromMouse = new Comparator<Entity>() {
-//
-//		public int compare(Entity o1, Entity o2) {
-//
-//			int mx = Game.instance.getInput().x;
-//			int my = Game.instance.getInput().y;
-//			double d1 = Math.sqrt((mx - o1.x) * (mx - o1.x) + (my - o1.y) * (my - o1.y));
-//			double d2 = Math.sqrt((mx - o2.x) * (mx - o2.x) + (my - o2.y) * (my - o2.y));
-//
-//			return (int) (d1 - d2);
-//
-//		}
-//	};
+	// private Comparator<Entity> unitDistFromMouse = new Comparator<Entity>() {
+	//
+	// public int compare(Entity o1, Entity o2) {
+	//
+	// int mx = Game.instance.getInput().x;
+	// int my = Game.instance.getInput().y;
+	// double d1 = Math.sqrt((mx - o1.x) * (mx - o1.x) + (my - o1.y) * (my -
+	// o1.y));
+	// double d2 = Math.sqrt((mx - o2.x) * (mx - o2.x) + (my - o2.y) * (my -
+	// o2.y));
+	//
+	// return (int) (d1 - d2);
+	//
+	// }
+	// };
 
 	private int getNearestUnit(int mx, int my) {
 		List<Entity> search = new ArrayList<Entity>();
@@ -136,10 +150,15 @@ public class PlayerView {
 
 		screen.setScroll(0, 0);
 
+		renderHUD(screen);
+
+	}
+
+	public void renderHUD(Screen screen) {
+		Font.draw("FPS:" + Game.instance.fps, screen, 3, 3, 0xFFFFDD00);
 		for (int i = 0; i < messages.size(); i++) {
 			messages.get(i).render(screen, i);
 		}
-
 	}
 
 	private Comparator<Entity> spriteSorter = new Comparator<Entity>() {

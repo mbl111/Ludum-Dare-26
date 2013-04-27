@@ -1,6 +1,8 @@
 package com.mbl111.ld26.entity;
 
 import com.mbl111.ld26.Game;
+import com.mbl111.ld26.ai.IdleJob;
+import com.mbl111.ld26.ai.Job;
 import com.mbl111.ld26.screen.Art;
 import com.mbl111.ld26.screen.PlayerView;
 import com.mbl111.ld26.screen.Screen;
@@ -10,16 +12,24 @@ public class Unit extends Entity {
 
 	public int color = 0xFFFFFFFF;
 	private boolean selected;
+	private Job job;
+	public int speedMod = 2;
+	public int life = 0;
 
 	public Unit(int i) {
 		super();
 		x = i * 20;
 		xr = 3;
 		yr = 6;
+		job = new IdleJob();
 	}
 
 	public void tick() {
-		move(1, 0);
+		life++;
+		job.tick();
+		if (job.finished()) {
+			job = new IdleJob();
+		}
 	}
 
 	@Override
@@ -55,6 +65,11 @@ public class Unit extends Entity {
 
 	public void select() {
 		this.selected = true;
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
+		this.job.init(this);
 	}
 
 }

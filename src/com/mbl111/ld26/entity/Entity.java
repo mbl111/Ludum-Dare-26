@@ -12,7 +12,7 @@ public class Entity {
 	public boolean removed = false;
 	public int dir = 0;
 	protected double walkDist = 0;
-	protected boolean walking = false;
+	public boolean walking = false;
 
 	public Entity() {
 		x = 10;
@@ -34,9 +34,14 @@ public class Entity {
 	}
 
 	public void move(int xa, int ya) {
-		if (movePart(xa, 0) || movePart(0, ya)) {
+		if (xa != 0 || ya != 0) {
+			boolean stopped = true;
+			if (xa != 0 && movePart(xa, 0))
+				stopped = false;
+			if (ya != 0 && movePart(0, ya))
+				stopped = false;
 			walkDist += Math.sqrt(xa * xa + ya * ya);
-			walking = true;
+			walking = !stopped;
 			if (ya > 0)
 				dir = 0;
 			if (ya < 0)

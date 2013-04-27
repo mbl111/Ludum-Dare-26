@@ -84,25 +84,7 @@ public class Bitmap {
 		}
 	}
 
-	private int blendOn(int col, int col1) {
-		int a2 = (col1 >> 24) & 0xFF;
-		int a1 = 256 - a2;
-
-		int rr = col1 & 0xFF0000;
-		int gg = col1 & 0xFF00;
-		int bb = col1 & 0xFF;
-
-		int r = col & 0xFF0000;
-		int g = col & 0xFF00;
-		int b = col & 0xFF;
-
-		r = r * a1 + rr * a2 >> 8 & 0xFF0000;
-		g = g * a1 + gg * a2 >> 8 & 0xFF00;
-		b = b * a1 + bb * a2 >> 8 & 0xFF;
-
-		return ((a2 << 24) | r | g | b);
-	}
-
+	
 	private int blend(int col, int col1) {
 		int a2 = (col1 >> 24) & 0xFF;
 		int a1 = 256 - a2;

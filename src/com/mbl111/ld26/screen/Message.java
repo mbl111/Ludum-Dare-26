@@ -6,7 +6,7 @@ public class Message {
 
 	private String message;
 	private MessageType type;
-	private int life = 60 * 10;
+	private int life = 60 * 6;
 
 	public Message(String msg, MessageType type) {
 		this.message = msg;
