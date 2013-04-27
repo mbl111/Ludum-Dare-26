@@ -6,8 +6,8 @@ import java.awt.image.DataBufferInt;
 public class Screen extends Bitmap {
 
 	public BufferedImage image;
-	private int xOff;
-	private int yOff;
+	private int xOff = 0;
+	private int yOff = 0;
 
 	public Screen(int w, int h) {
 		super(w, h);
@@ -16,11 +16,11 @@ public class Screen extends Bitmap {
 	}
 
 	public void draw(Bitmap bitmap, int x, int y) {
-		super.draw(bitmap, x, y);
+		super.draw(bitmap, (x - this.xOff), (y - this.yOff));
 	}
 
 	public void drawWash(Bitmap bitmap, int x, int y, int color) {
-		super.drawWash(bitmap, (x + this.xOff), (y + this.yOff), color);
+		super.drawWash(bitmap, (x - this.xOff), (y - this.yOff), color);
 	}
 
 	public void setScroll(int x, int y) {

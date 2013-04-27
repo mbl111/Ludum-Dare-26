@@ -10,13 +10,14 @@ import com.mbl111.ld26.Game;
 public class Art {
 
 	public static Bitmap[][] WALL = cutLoad("wall", 32, 32);
+	public static Bitmap[][] TILES = cutLoad("tiles", 32, 32);
 
 	private static Bitmap[][] cutLoad(String name, int w, int h) {
 
 		BufferedImage bi = null;
 		Bitmap[][] bitmaps;
 		try {
-			bi = ImageIO.read(Game.class.getResource("/" + name + ".png"));
+			bi = ImageIO.read(Game.class.getResource("/textures/" + name + ".png"));
 
 		} catch (IOException e) {
 			System.err.println("Failed to load texture - " + name);
@@ -27,6 +28,7 @@ public class Art {
 		bitmaps = new Bitmap[nx][ny];
 		for (int cx = 0; cx < nx; cx++) {
 			for (int cy = 0; cy < ny; cy++) {
+				bitmaps[cx][cy] = new Bitmap(w, h);
 				bitmaps[cx][cy].pixels = bi.getRGB(cx * w, cy * h, w, h, null, 0, w);
 			}
 		}

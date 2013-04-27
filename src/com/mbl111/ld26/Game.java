@@ -9,20 +9,33 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import com.mbl111.ld26.input.Input;
+import com.mbl111.ld26.input.InputHandler;
 import com.mbl111.ld26.screen.Art;
+import com.mbl111.ld26.screen.PlayerView;
 import com.mbl111.ld26.screen.Screen;
+import com.mbl111.ld26.world.World;
 
 public class Game extends Canvas implements Runnable {
 
-	public static final int WIDTH = 480;
+	public static final int WIDTH = 360;
 	public static final int HEIGHT = WIDTH * 3 / 4;
 	public static final String NAME = "";
-	private static int SCALE = 2;
+	private static int SCALE = 3;
+	public static Game instance;
 
 	private JFrame frame;
 	public boolean running = true;
 	private int fps = 0;
 	private Screen screen;
+	private World world;
+	private PlayerView view;
+	private InputHandler inputHandler;
+	private Input input = null;
+
+	public Game() {
+		instance = this;
+	}
 
 	public void start() {
 		Thread t = new Thread(this, "Main Game Thread");
@@ -49,6 +62,9 @@ public class Game extends Canvas implements Runnable {
 	private void init() {
 		System.out.println("Init");
 		screen = new Screen(WIDTH, HEIGHT);
+		world = new World(32, 32);
+		view = new PlayerView(WIDTH, HEIGHT);
+		inputHandler = new InputHandler(this);
 	}
 
 	public void run() {
@@ -96,6 +112,10 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void tick() {
+		input = inputHandler.updateMouseStatus(SCALE);
+		if (this.hasFocus()) {
+			this.view.tick();
+		}
 	}
 
 	private void render() {
@@ -104,10 +124,8 @@ public class Game extends Canvas implements Runnable {
 			this.createBufferStrategy(3);
 			return;
 		}
-
-		screen.draw(Art.WALL[0][0], 64, 64);
-		screen.fill(32, 10, 32, 32, 0xFFFF00FF);
-		screen.fill(0, 10, 32, 32, 0xF000FF00);
+		screen.clear(0xFFFFFFFF);
+		view.render(screen);
 
 		Graphics g = bs.getDrawGraphics();
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -136,6 +154,14 @@ public class Game extends Canvas implements Runnable {
 		game.frame.setVisible(true);
 
 		game.start();
+	}
+
+	public World getWorld() {
+		return world;
+	}
+
+	public Input getInput() {
+		return input;
 	}
 
 }
