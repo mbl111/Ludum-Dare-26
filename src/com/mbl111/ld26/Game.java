@@ -9,25 +9,25 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import com.mbl111.ld26.screen.Art;
+import com.mbl111.ld26.screen.Screen;
+
 public class Game extends Canvas implements Runnable {
 
-	public static final int WIDTH = 360;
+	public static final int WIDTH = 480;
 	public static final int HEIGHT = WIDTH * 3 / 4;
 	public static final String NAME = "";
 	private static int SCALE = 2;
 
 	private JFrame frame;
 	public boolean running = true;
-	private int fps;
-
-	public Game() {
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-	}
+	private int fps = 0;
+	private Screen screen;
 
 	public void start() {
-		new Thread(this, "Main Game Thread").start();
+		Thread t = new Thread(this, "Main Game Thread");
+		t.setPriority(Thread.MAX_PRIORITY);
+		t.start();
 	}
 
 	private void stop() {
@@ -36,8 +36,7 @@ public class Game extends Canvas implements Runnable {
 
 	public void rescale(int scale) {
 		if (this.running == false) {
-			throw new UnsupportedOperationException(
-					"Can't rescale the window while the game is not running. ");
+			throw new UnsupportedOperationException("Can't rescale the window while the game is not running. ");
 		}
 		this.SCALE = scale;
 		this.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -48,21 +47,19 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void init() {
-
+		System.out.println("Init");
+		screen = new Screen(WIDTH, HEIGHT);
 	}
 
 	public void run() {
-		init();
-
+		long lastTime = System.nanoTime();
 		double unprocessed = 0;
 		double nsPerTick = 1000000000.0 / 60.0;
 		int frames = 0;
 		int ticks = 0;
-		long lastTime = System.nanoTime();
 		long lastTimer1 = System.currentTimeMillis();
-
+		init();
 		while (running) {
-
 			long now = System.nanoTime();
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
@@ -95,12 +92,10 @@ public class Game extends Canvas implements Runnable {
 				frames = 0;
 				ticks = 0;
 			}
-
 		}
 	}
 
 	private void tick() {
-
 	}
 
 	private void render() {
@@ -110,15 +105,17 @@ public class Game extends Canvas implements Runnable {
 			return;
 		}
 
-		Graphics g = bs.getDrawGraphics();
+		screen.draw(Art.WALL[0][0], 64, 64);
+		screen.fill(32, 10, 32, 32, 0xFFFF00FF);
+		screen.fill(0, 10, 32, 32, 0xF000FF00);
 
-		g.setColor(Color.GRAY);
+		Graphics g = bs.getDrawGraphics();
 		g.fillRect(0, 0, getWidth(), getHeight());
-		int width = WIDTH * SCALE;
-		int height = HEIGHT * SCALE;
-		int xs = (getWidth() - width) / 2;
-		int ys = (getHeight() - height) / 2;
-		g.drawImage(screen.image, xs, ys, width, height, null);
+		int ww = WIDTH * SCALE;
+		int hh = HEIGHT * SCALE;
+		int xo = (getWidth() - ww) / 2;
+		int yo = (getHeight() - hh) / 2;
+		g.drawImage(screen.image, xo, yo, ww, hh, null);
 		g.dispose();
 		bs.show();
 	}
