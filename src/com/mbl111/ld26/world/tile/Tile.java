@@ -38,6 +38,8 @@ public abstract class Tile {
 	public static Tile VOIDTILE = new VoidTile(0);
 	public static Tile GRASSTILE = new GrassTile(1);
 	public static Tile TREETILE = new TreeTile(2);
+	public static Tile WHEATTILE = new WheatTile(3);
+	public static Tile MILLTILE = new WindmillTile(4);
 
 	public boolean canPass(Entity entity) {
 		return true;

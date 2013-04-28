@@ -14,6 +14,7 @@ public class Art {
 	public static Bitmap[][] FONT = cutLoad("font", 8, 8);
 	public static Bitmap[][] UNIT = cutLoad("unit", 8, 12);
 	public static Bitmap[][] TREE = cutLoad("tree", 16, 16);
+	public static Bitmap[][] BUILDINGS = cutLoad("buildings", 48, 32);
 
 	private static Bitmap[][] cutLoad(String name, int w, int h) {
 

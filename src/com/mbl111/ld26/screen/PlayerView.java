@@ -139,8 +139,8 @@ public class PlayerView {
 	public void render(Screen screen) {
 		World w = Game.instance.getWorld();
 		screen.setScroll(scrollX, scrollY);
-		int ww = (width + 31);
-		int hh = (height + 31);
+		int ww = (width + Tile.WIDTH - 1);
+		int hh = (height + Tile.HEIGHT - 1);
 		int xo = (scrollX);
 		int yo = (scrollY);
 

@@ -29,7 +29,9 @@ public class World {
 		Arrays.fill(tiles, 1);
 
 		tiles[2 + 2 * width] = 2;
-		data[2 + 2 * width] = 4;
+		tiles[3 + 2 * width] = 3;
+		
+		tiles[5 + 2 * width] = 4;
 
 		for (int i = 0; i < 5; i++) {
 			add(new Unit(i));

@@ -6,9 +6,9 @@ import com.mbl111.ld26.screen.Art;
 import com.mbl111.ld26.screen.Screen;
 import com.mbl111.ld26.util.MathHelper;
 
-public class TreeTile extends Tile {
+public class WindmillTile extends Tile {
 
-	public TreeTile(int id) {
+	public WindmillTile(int id) {
 		super(id);
 	}
 
@@ -22,9 +22,9 @@ public class TreeTile extends Tile {
 
 	public void render(Screen screen, int x, int y) {
 		int ticks = Game.instance.tickCount;
-		int step = (ticks) % 512 / 64;
+		int step = (ticks) % 60 / 20;
 		screen.draw(Art.TILES[0][0], x * Tile.WIDTH, y * Tile.HEIGHT);
-		screen.draw(Art.TILES[4 + step][0], (x * Tile.WIDTH), (y * Tile.HEIGHT));
+		screen.draw(Art.BUILDINGS[step][0], (x * Tile.WIDTH) - 16, (y * Tile.HEIGHT) - 16);
 	}
 
 	@Override

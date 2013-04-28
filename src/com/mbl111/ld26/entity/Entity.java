@@ -34,6 +34,8 @@ public class Entity {
 	}
 
 	public void move(int xa, int ya) {
+		this.ox = this.x;
+		this.oy = this.y;
 		if (xa != 0 || ya != 0) {
 			boolean stopped = true;
 			if (xa != 0 && movePart(xa, 0))
@@ -66,8 +68,6 @@ public class Entity {
 		int xrc = (x < 0 ? -this.xr : this.xr);
 
 		if (world.getTile((x + this.x + xrc) / Tile.WIDTH, (y + this.y + yrc) / Tile.HEIGHT).canPass(this)) {
-			this.ox = this.x;
-			this.oy = this.y;
 			this.x += x;
 			this.y += y;
 			return true;

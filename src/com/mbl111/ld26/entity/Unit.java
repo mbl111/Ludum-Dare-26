@@ -19,8 +19,8 @@ public class Unit extends Entity {
 	public Unit(int i) {
 		super();
 		x = i * 20;
-		xr = 3;
-		yr = 6;
+		xr = 2;
+		yr = 4;
 		job = new IdleJob();
 	}
 
