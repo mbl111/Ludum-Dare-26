@@ -6,12 +6,13 @@ import java.util.List;
 
 import com.mbl111.ld26.entity.Entity;
 import com.mbl111.ld26.entity.Unit;
+import com.mbl111.ld26.util.SyncedRandom;
 import com.mbl111.ld26.world.tile.Tile;
 
 public class World {
 
 	public int[] tiles;
-	public byte[] data;
+	public int[] data;
 	public int width, height;
 	public List<Entity> entities = new ArrayList<Entity>();
 	public List<Entity>[] entitiesInTiles;
@@ -21,19 +22,22 @@ public class World {
 		this.width = w;
 		this.height = h;
 		this.tiles = new int[w * h];
-		this.data = new byte[w * h];
+		this.data = new int[w * h];
 		entitiesInTiles = new ArrayList[w * h];
 		for (int i = 0; i < entitiesInTiles.length; i++) {
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
 		Arrays.fill(tiles, 1);
+		Arrays.fill(data, 0);
 
-		tiles[2 + 2 * width] = 2;
+		tiles[2 + 2 * width] = Tile.TREETILE.id;
+
 		tiles[3 + 2 * width] = 3;
-		
-		tiles[5 + 2 * width] = 4;
 
-		for (int i = 0; i < 5; i++) {
+		tiles[5 + 2 * width] = 4;
+		tiles[3 + 4 * width] = 5;
+
+		for (int i = 0; i < 20; i++) {
 			add(new Unit(i));
 		}
 
@@ -56,19 +60,21 @@ public class World {
 			}
 
 		}
+
+		for (int i = 0; i < 1000; i++) {
+			int x = SyncedRandom.r.nextInt(width);
+			int y = SyncedRandom.r.nextInt(height);
+			getTile(x, y).tick(this, x, y);
+		}
+
 	}
 
 	public void setTile(int id, int x, int y, boolean update) {
 		if (x >= width || x < 0 || y >= height || y < 0)
 			return;
 		tiles[x + y * width] = id;
-		Tile.getById(id).update(x, y);
-		if (update) {
-			getTile(x + 1, y).update(x + 1, y);
-			getTile(x - 1, y).update(x - 1, y);
-			getTile(x, y + 1).update(x, y + 1);
-			getTile(x, y - 1).update(x, y - 1);
-		}
+		if (update)
+			Tile.getById(id).onPlace(this, x, y);
 	}
 
 	private int getTileId(int x, int y) {
@@ -146,5 +152,11 @@ public class World {
 			return 0;
 
 		return data[x + y * width];
+	}
+
+	public void setData(int x, int y, int value) {
+		if (x >= width || x < 0 || y >= height || y < 0)
+			return;
+		data[x + y * width] = value;
 	}
 }

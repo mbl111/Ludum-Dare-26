@@ -1,6 +1,10 @@
 package com.mbl111.ld26.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mbl111.ld26.Game;
+import com.mbl111.ld26.Resource;
 import com.mbl111.ld26.ai.IdleJob;
 import com.mbl111.ld26.ai.Job;
 import com.mbl111.ld26.screen.Art;
@@ -15,6 +19,9 @@ public class Unit extends Entity {
 	private Job job;
 	public int speedMod = 2;
 	public int life = 0;
+	public Resource currentResource = Resource.NONE;
+	public int resourceAmount = 0;
+	public static final int maxHold = 12;
 
 	public Unit(int i) {
 		super();
@@ -70,6 +77,22 @@ public class Unit extends Entity {
 	public void setJob(Job job) {
 		this.job = job;
 		this.job.init(this);
+	}
+
+	public void setCollect(Resource resouce) {
+		if (this.currentResource == resouce)
+			return;
+		this.currentResource = resouce;
+		this.resourceAmount = 0;
+	}
+
+	public List<String> getHudInfo() {
+		List<String> i = new ArrayList<String>();
+		i.add("Villager");
+		if (this.currentResource != Resource.NONE) {
+			i.add(this.currentResource.name() + "(" + this.resourceAmount + ")");
+		}
+		return i;
 	}
 
 }

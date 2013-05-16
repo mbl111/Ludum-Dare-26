@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.mbl111.ld26.Game;
+import com.mbl111.ld26.Resource;
 import com.mbl111.ld26.ai.FollowJob;
 import com.mbl111.ld26.ai.MoveJob;
 import com.mbl111.ld26.entity.Entity;
@@ -14,16 +15,18 @@ import com.mbl111.ld26.entity.Unit;
 import com.mbl111.ld26.screen.Message.MessageType;
 import com.mbl111.ld26.world.World;
 import com.mbl111.ld26.world.tile.Tile;
+import com.mbl111.ld26.world.tile.UnitInteractableTile;
 
 public class PlayerView {
 
 	public int scrollX = 0;
-	public int scrollY = 0;
+	public int scrollY = -8;
 	public int width, height;
 	public int selectedBuilding = -1;
 	public int selectedUnit = -1;
 	public List<Message> messages = new ArrayList<Message>();
 	private TreeMap<Integer, Unit> units = new TreeMap<Integer, Unit>();
+	private int food = 0;
 
 	public PlayerView(int w, int h) {
 		this.width = w;
@@ -54,6 +57,16 @@ public class PlayerView {
 				}
 				units.get(u).select();
 				selectedUnit = u;
+				selectedBuilding = -1;
+			} else {
+				boolean gotJob = false;
+				Tile t = Game.instance.getWorld().getTile((mx + scrollX) / Tile.WIDTH, (my + scrollY) / Tile.HEIGHT);
+				if (t instanceof UnitInteractableTile) {
+					if (selectedUnit != -1)
+						units.get(selectedUnit).unSelect();
+					selectedUnit = -1;
+					selectedBuilding = ((mx + scrollX) / Tile.WIDTH) + ((my + scrollY) / Tile.HEIGHT) * Game.instance.getWorld().width;
+				}
 			}
 
 		}
@@ -62,8 +75,15 @@ public class PlayerView {
 			if (selectedUnit > -1) {
 				Unit u = units.get(selectedUnit);
 				if (u != null) {
-					u.setJob(new MoveJob(mx + scrollX, my + scrollY));
-					messages.add(new Message("Moving Unit(" + u.id + ") to (" + (mx + scrollX) + "," + (my + scrollY) + ")", MessageType.INFO));
+					boolean gotJob = false;
+					Tile t = Game.instance.getWorld().getTile((mx + scrollX) / Tile.WIDTH, (my + scrollY) / Tile.HEIGHT);
+					if (t instanceof UnitInteractableTile) {
+						gotJob = ((UnitInteractableTile) t).giveUnitAction(u, Game.instance.getWorld(), (mx + scrollX) / Tile.WIDTH, (my + scrollY) / Tile.HEIGHT);
+					}
+					if (!gotJob) {
+						u.setJob(new MoveJob(mx + scrollX, my + scrollY));
+						messages.add(new Message("Moving Unit(" + u.id + ") to (" + (mx + scrollX) + "," + (my + scrollY) + ")", MessageType.INFO));
+					}
 				}
 			}
 		}
@@ -91,10 +111,10 @@ public class PlayerView {
 			scrollX = 0;
 		if (scrollX > Game.instance.getWorld().width * Tile.WIDTH - width)
 			scrollX = Game.instance.getWorld().width * Tile.WIDTH - width;
-		if (scrollY < 0)
-			scrollY = 0;
-		if (scrollY > Game.instance.getWorld().height * Tile.HEIGHT - height)
-			scrollY = Game.instance.getWorld().height * Tile.HEIGHT - height;
+		if (scrollY < -12)
+			scrollY = -12;
+		if (scrollY > Game.instance.getWorld().height * Tile.HEIGHT - height + 48)
+			scrollY = Game.instance.getWorld().height * Tile.HEIGHT - height + 48;
 
 	}
 
@@ -151,13 +171,19 @@ public class PlayerView {
 
 		for (int y = tyo; y <= thh + tyo; y++) {
 			for (int x = txo; x <= tww + txo; x++) {
-				w.getTile(x, y).render(screen, x, y);
+				w.getTile(x, y).render(screen, Game.instance.getWorld(), x, y);
 			}
 		}
 
 		List<Entity> e = w.getTileEntities(txo, tyo, tww, thh);
 		if (e.size() > 0)
 			sortAndRender(screen, e);
+
+		for (int y = tyo; y <= thh + tyo; y++) {
+			for (int x = txo; x <= tww + txo; x++) {
+				w.getTile(x, y).postEntityRender(screen, Game.instance.getWorld(), x, y);
+			}
+		}
 
 		screen.setScroll(0, 0);
 
@@ -167,6 +193,30 @@ public class PlayerView {
 
 	public void renderHUD(Screen screen) {
 		Font.draw("FPS:" + Game.instance.fps, screen, 3, 3, 0xFFFFDD00);
+
+		screen.draw(Art.HUDOVERLAY[0][0], 0, Game.HEIGHT - 48);
+		if (selectedBuilding != -1) {
+			int sx = selectedBuilding % Game.instance.getWorld().width;
+			int sy = selectedBuilding / Game.instance.getWorld().width;
+			Tile t = Game.instance.getWorld().getTile(sx, sy);
+			int data = Game.instance.getWorld().getData(sx, sy);
+			List<String> s = t.getHudInfo(data);
+			for (int i = 0; i < s.size(); i++) {
+				Font.draw(s.get(i), screen, 250, Game.HEIGHT - 48 + 4 + (8 * i), 0xFFFFFFFF);
+			}
+		} else if (selectedUnit != -1) {
+			Unit u = units.get(selectedUnit);
+			if (u != null) {
+				List<String> s = u.getHudInfo();
+				for (int i = 0; i < s.size(); i++) {
+					Font.draw(s.get(i), screen, 250, Game.HEIGHT - 48 + 4 + (8 * i), 0xFFFFFFFF);
+				}
+			}
+		}
+
+		screen.draw(Art.TOPBAR[0][0], 0, 0);
+		Font.draw(food + "", screen, 14, 1, 0xFF333333);
+
 		for (int i = 0; i < messages.size(); i++) {
 			messages.get(i).render(screen, i);
 		}
@@ -192,5 +242,11 @@ public class PlayerView {
 
 	public void addUnit(Unit unit, int lastEntityId) {
 		this.units.put(lastEntityId, unit);
+	}
+
+	public void addResouce(int amt, Resource res) {
+		if (res == Resource.FOOD) {
+			food += amt;
+		}
 	}
 }

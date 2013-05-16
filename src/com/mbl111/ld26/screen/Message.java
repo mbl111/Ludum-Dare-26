@@ -30,7 +30,7 @@ public class Message {
 		if (life < 32) {
 			c = c & (0xFFFFFF | ((life * 8) & 0xFF) << 24);
 		}
-		Font.draw(message, screen, (Game.WIDTH - (message.length() * 8)) / 2, 8 * messageIndex, c);
+		Font.draw(message, screen, (Game.WIDTH - (message.length() * 8)) / 2, 8 * messageIndex + 13, c);
 	}
 
 	public static enum MessageType {

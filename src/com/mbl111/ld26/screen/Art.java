@@ -2,6 +2,7 @@ package com.mbl111.ld26.screen;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -13,17 +14,19 @@ public class Art {
 	public static Bitmap[][] TILES = cutLoad("tiles", 32, 32);
 	public static Bitmap[][] FONT = cutLoad("font", 8, 8);
 	public static Bitmap[][] UNIT = cutLoad("unit", 8, 12);
-	public static Bitmap[][] TREE = cutLoad("tree", 16, 16);
-	public static Bitmap[][] BUILDINGS = cutLoad("buildings", 48, 32);
+	public static Bitmap[][] BUILDINGS = cutLoad("buildings", 32, 32);
+	public static Bitmap[][] HUDOVERLAY = cutLoad("hud", 360, 48);
+	public static Bitmap[][] TOPBAR = cutLoad("topbar", 360, 12);
 
 	private static Bitmap[][] cutLoad(String name, int w, int h) {
 
 		BufferedImage bi = null;
 		Bitmap[][] bitmaps;
 		try {
-			bi = ImageIO.read(Game.class.getResource("/textures/" + name + ".png"));
+			URL u = Game.class.getResource("/textures/" + name + ".png");
+			bi = ImageIO.read(u);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("Failed to load texture - " + name);
 			return null;
 		}
