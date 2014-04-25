@@ -17,6 +17,8 @@ public class BuildJob extends Job {
 
 	@Override
 	public void tick() {
+		super.tick();
+		
 		if (MathHelper.distance(unit.x, unit.y, (tileX * Tile.WIDTH) + (Tile.WIDTH / 2), (tileY * Tile.HEIGHT) + (Tile.HEIGHT / 2)) > 16 + 5) {
 			if (subJob == null) {
 				this.subJob = new MoveJob((tileX * Tile.WIDTH) + (Tile.WIDTH / 2), (tileY * Tile.HEIGHT) + (Tile.HEIGHT / 2));
@@ -24,10 +26,6 @@ public class BuildJob extends Job {
 			}
 		} else {
 			subJob = null;
-		}
-		if (subJob != null) {
-			subJob.tick();
-			return;
 		}
 
 		boolean build = Game.instance.tickCount % 120 / 2 == 0;

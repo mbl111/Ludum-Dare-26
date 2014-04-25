@@ -11,7 +11,6 @@ import com.mbl111.ld26.world.tile.WindmillTile;
 public class FarmJob extends Job {
 
 	public int tileX, tileY;
-	public Job subJob = null;
 	public boolean depositing = false;
 	public boolean movingToWheat = true;
 	private int closeX = -1;
@@ -31,6 +30,8 @@ public class FarmJob extends Job {
 
 	@Override
 	public void tick() {
+		super.tick();
+		
 		if (unit.currentResource != resourceToCollect) {
 			unit.setCollect(resourceToCollect);
 		}
@@ -96,10 +97,6 @@ public class FarmJob extends Job {
 					subJob = null;
 				}
 			}
-		}
-		if (subJob != null) {
-			subJob.tick();
-			return;
 		}
 
 		int data = Game.instance.getWorld().getData(tileX, tileY);
