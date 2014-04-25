@@ -8,7 +8,6 @@ import com.mbl111.ld26.world.tile.Tile;
 public class BuildJob extends Job {
 
 	public int tileX, tileY;
-	public Job subJob = null;
 
 	public BuildJob(int x, int y) {
 		this.tileX = x;
